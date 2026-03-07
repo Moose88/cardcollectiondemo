@@ -72,5 +72,50 @@ namespace ProductsDemo.Controllers
                 return Ok(card);
             }
         }
+
+        // Remove a card or decrease amount
+        [HttpDelete]
+        [Route("api/cards/remove")]
+        public IHttpActionResult RemoveCard(Cards card)
+        {
+            if (card == null)
+            {
+                return BadRequest("Card cannot be null");
+            }
+
+            // Sanitize input
+            var name = card.Name?.Trim() ?? "";
+            var edition = card.Edition?.Trim() ?? "";
+            var quality = card.Quality?.Trim() ?? "";
+
+            // Find match
+            var existingCard = cards.FirstOrDefault(c =>
+            string.Equals(c.Name?.Trim(), name, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(c.Edition?.Trim(), edition, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(c.Quality?.Trim(), quality, StringComparison.OrdinalIgnoreCase));
+
+            if (existingCard == null)
+            {
+                return BadRequest("Card not in collection");
+            }
+
+            if(card.Quantity > existingCard.Quantity)
+            {
+                return BadRequest($"Cannot remove {card.Quantity} amount.");
+            }
+
+            // Calculate remaining
+            existingCard.Quantity -= card.Quantity;
+
+            // If remaining is 0, remove from list
+            if(existingCard.Quantity == 0)
+            {
+                cards.Remove(existingCard);
+                return Ok(new { message = "Card remove from collection" });
+            }
+
+            return (Ok(new { message = $"Removed {card.Quantity} of {card.Name} from collection" }));
+
+        }
     }
 }
