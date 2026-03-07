@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Card Collection Demo</title>
+    <style>
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: black;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div>
+        <h2>All Cards</h2>
+        <button onclick="openAddModal()">Add</button>
+        <ul id="cards" />
+    </div>
+    <div>
+        <h2>Search by ID</h2>
+        <input type="text" id="cardId" size="5" />
+        <input type="button" value="Search" onclick="find();" />
+        <p id="card" />
+    </div>
+
+    <!-- Add Card Modal -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAddModal()">&times;</span>
+            <h3>Add New Card</h3>
+            <form id="addCardForm">
+                <div class="form-group">
+                    <label for="cardName">Name:</label>
+                    <input type="text" id="cardName" required />
+                </div>
+                <div class="form-group">
+                    <label for="cardEdition">Edition:</label>
+                    <input type="text" id="cardEdition" required />
+                </div>
+                <div class="form-group">
+                    <label for="cardQuality">Quality:</label>
+                    <input type="text" id="cardQuality" required />
+                </div>
+                <div class="form-group">
+                    <label for="cardPrice">Price:</label>
+                    <input type="number" id="cardPrice" step="0.01" required />
+                </div>
+                <button type="button" onclick="addCard()">Submit</button>
+                <button type="button" onclick="closeAddModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script>
+        var uri = 'api/cards';
+
+        $(document).ready(function () {
+            loadCards();
+        });
+
+        function loadCards() {
+            $('#cards').empty();
+            $.getJSON(uri)
+                .done(function (data) {
+                    $.each(data, function (key, item) {
+                        $('<li>', { text: formatItem(item) }).appendTo($('#cards'));
+                    });
+                });
+        }
+
+        function formatItem(item) {
+            return item.Quantity + 'x ' + item.Name + ' ' + item.Edition + ' Edition ' + ' $' + item.Price;
+        }
+
+        function find() {
+            var id = $('#cardId').val();
+            $.getJSON(uri + '/' + id)
+                .done(function (data) {
+                    $('#cards').text(formatItem(data));
+                })
+                .fail(function (jqXHR, textStatus, err) {
+                    $('#cards').text('Error: ' + err);
+                });
+        }
+
+        function openAddModal() {
+            document.getElementById('addModal').style.display = 'block';
+        }
+
+        function closeAddModal() {
+            document.getElementById('addModal').style.display = 'none';
+            document.getElementById('addCardForm').reset();
+        }
+
+        function addCard() {
+            var card = {
+                Name: $('#cardName').val(),
+                Edition: $('#cardEdition').val(),
+                Quality: $('#cardQuality').val(),
+                Price: parseFloat($('#cardPrice').val())
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: uri,
+                data: JSON.stringify(card),
+                contentType: 'application/json',
+                success: function (data) {
+                    closeAddModal();
+                    loadCards();
+                },
+                error: function (jqXHR, textStatus, err) {
+                    alert('Error: ' + err);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
