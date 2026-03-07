@@ -105,7 +105,7 @@
         }
 
         function formatItem(item) {
-            return item.Quantity + 'x ' + item.Name + ' ' + item.Edition + ' Edition ' + ' $' + item.Price;
+            return item.Quantity + 'x ' + item.Name + ' ' + item.Edition + ' Edition ' + ' $' + item.Price.toFixed(2);
         }
 
         function find() {

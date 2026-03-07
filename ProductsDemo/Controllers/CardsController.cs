@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using ProductsDemo.Models;
 
@@ -66,7 +63,7 @@ namespace ProductsDemo.Controllers
             else
             {
                 // New card - add to list
-                card.Id = cards.Count;
+                card.Id = cards.Count + 1;
                 card.Name = name;
                 card.Edition = edition;
                 card.Quality = quality;
