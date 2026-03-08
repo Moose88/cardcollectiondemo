@@ -87,6 +87,34 @@
         </div>
     </div>
 
+    <!-- Remove Card Modal -->
+    <div id="removeModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeRemoveModal()">&times;</span>
+            <h3>Remove Card</h3>
+            <form id="removeCardForm">
+                <div class="form-group">
+                    <label for="removeCardName">Name:</label>
+                    <input type="text" id="removeCardName" required />
+                </div>
+                <div class="form-group">
+                    <label for="removeCardEdition">Edition:</label>
+                    <input type="text" id="removeCardEdition" required />
+                </div>
+                <div class="form-group">
+                    <label for="removeCardQuality">Quality:</label>
+                    <input type="text" id="removeCardQuality" required />
+                </div>
+                <div class="form-group">
+                    <label for="removeCardQuantity">Quantity to Remove:</label>
+                    <input type="number" id="removeCardQuantity" min="1" value="1" required />
+                </div>
+                <button type="button" onclick="removeCard()">Remove</button>
+                <button type="button" onclick="closeRemoveModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
     <script>
         var uri = 'api/cards';
@@ -150,6 +178,47 @@
                     alert('Error: ' + err);
                 }
             });
+        }
+
+        function openRemoveModal() {
+            document.getElementById('removeModal').style.display = 'block';
+        }
+
+        function closeRemoveModal() {
+            document.getElementById('removeModal').style.display = 'none';
+            document.getElementById('removeCardForm').reset();
+        }
+
+        function removeCard() {
+            var card = {
+                Name: $('#removeCardName').val(),
+                Edition: $('#removeCardEdition').val(),
+                Quality: $('#removeCardQuality').val(),
+                Quantity: $('#removeCardQuantity').val()
+            }
+
+            $.ajax({
+                type: 'DELETE',
+                url: 'api/cards/remove',
+                data: JSON.stringify(card),
+                contentType: 'application/json',
+                success: function (response) {
+                    alert(response.message);
+                    closeRemoveModal();
+                    loadCards();
+                },
+                error: function (jqXHR, textStatus, err) {
+                    var errorMsg = 'Error: ';
+                    if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+                        errorMsg += jqXHR.responseJSON.message;
+                    } else if (jqXHR.responseJSON && jqXHR.responseJSON.Message) {
+                        errorMsg += jqXHR.responseJSON.Message;
+                    } else {
+                        errorMsg += err;
+                    }
+                    alert(errorMsg);
+                }
+            })
         }
     </script>
 </body>
