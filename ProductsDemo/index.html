@@ -49,9 +49,11 @@
 
     <div>
         <h2>All Cards</h2>
+        <br>
         <button onclick="openAddModal()">Add</button>
         <button onclick="openRemoveModal()">Remove</button>
-        <ul id="cards" />
+        <ul id="cards"></ul>
+        <p id="collectionTotal" style="font-weight: bold; margin-top: 10px;">Total Collection Value: $0.00</p>
     </div>
     <div>
         <h2>Search by ID</h2>
@@ -136,6 +138,7 @@
 
         $(document).ready(function () {
             loadCards();
+            collectionValue();
         });
 
         function loadCards() {
@@ -150,6 +153,14 @@
 
         function formatItem(item) {
             return item.Quantity + 'x ' + item.Name + ' ' + item.Edition + ' Edition ' + ' $' + item.Price.toFixed(2);
+        }
+
+        function collectionValue() {            
+            $.getJSON('api/cards/totalvalue')
+                .done(function (data) {
+                    var displayText = 'Total Collection Value: $' + data.totalValue.toFixed(2);
+                    $('#collectionTotal').text(displayText);
+                });
         }
 
         function find() {
@@ -188,6 +199,7 @@
                 success: function (data) {
                     closeAddModal();
                     loadCards();
+                    collectionValue();
                 },
                 error: function (jqXHR, textStatus, err) {
                     alert('Error: ' + err);
@@ -221,6 +233,7 @@
                     alert(response.message);
                     closeRemoveModal();
                     loadCards();
+                    collectionValue();
                 },
                 error: function (jqXHR, textStatus, err) {
                     var errorMsg = 'Error: ';
