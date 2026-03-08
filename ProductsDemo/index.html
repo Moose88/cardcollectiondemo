@@ -38,9 +38,10 @@
             display: block;
             margin-bottom: 5px;
         }
-        .form-group input {
+        .form-group input, .form-group select {
             width: 100%;
             padding: 5px;
+            box-sizing: border-box;
         }
     </style>
 </head>
@@ -75,7 +76,14 @@
                 </div>
                 <div class="form-group">
                     <label for="cardQuality">Quality:</label>
-                    <input type="text" id="cardQuality" required />
+                    <select id="cardQuality" required>
+                        <option value="">Select quality...</option>
+                        <option value="Near Mint">Near Mint (NM)</option>
+                        <option value="Lightly Played">Lightly Played (LP)</option>
+                        <option value="Moderately Played">Moderately Played (MP)</option>
+                        <option value="Heavily Played">Heavily Played (HP)</option>
+                        <option value="Damaged">Damaged (D)</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="cardPrice">Price:</label>
@@ -103,7 +111,14 @@
                 </div>
                 <div class="form-group">
                     <label for="removeCardQuality">Quality:</label>
-                    <input type="text" id="removeCardQuality" required />
+                    <select id="removeCardQuality" required>
+                        <option value="">Select quality...</option>
+                        <option value="Near Mint">Near Mint (NM)</option>
+                        <option value="Lightly Played">Lightly Played (LP)</option>
+                        <option value="Moderately Played">Moderately Played (MP)</option>
+                        <option value="Heavily Played">Heavily Played (HP)</option>
+                        <option value="Damaged">Damaged (D)</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="removeCardQuantity">Quantity to Remove:</label>

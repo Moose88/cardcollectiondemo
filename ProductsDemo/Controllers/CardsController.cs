@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Web.Http;
 using ProductsDemo.Models;
 
@@ -11,9 +12,23 @@ namespace ProductsDemo.Controllers
         static List<Cards> cards = new List<Cards>();
 
         // Returns all cards in the array
-        public IEnumerable<Cards> GetAllCardss()
+        public IEnumerable<Cards> GetAllCards()
         {
             return cards;
+        }
+
+        // Calculates total value of collection
+        [HttpGet]
+        [Route("api/cards/totalvalue")]
+        public IHttpActionResult GetCardValues()
+        {
+            decimal total = 0;
+            foreach (var card in cards)
+            {
+                total += card.Price * card.Quantity;
+            }
+
+            return Ok(new { totalValue = total });
         }
 
         // Returns individual cards within the array by its id
