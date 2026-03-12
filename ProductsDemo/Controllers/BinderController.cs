@@ -30,6 +30,22 @@ namespace ProductsDemo.Controllers
             return Ok(binder);
         }
 
+        // Add a binder
+        [HttpPost]
+        public IHttpActionResult AddBinder(Binder binder)
+        {
+            if(binder == null || string.IsNullOrEmpty(binder.GameName))
+            {
+                return BadRequest("Binder must have a name");
+            }
+
+            binder.Id = newBinderId++;
+            binder.CreatedDate = DateTime.Now;
+            binders.Add(binder);
+
+            return Ok(binder);
+        }
+
         // Remove binder by ID
         [HttpDelete]
         public IHttpActionResult DeleteBinder(int id)
