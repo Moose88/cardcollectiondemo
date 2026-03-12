@@ -32,7 +32,7 @@ namespace ProductsDemo.Controllers
 
         // Add a binder
         [HttpPost]
-        public IHttpActionResult AddBinder(Binder binder)
+        public IHttpActionResult PostBinder(Binder binder)
         {
             if(binder == null || string.IsNullOrEmpty(binder.GameName))
             {
