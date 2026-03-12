@@ -13,5 +13,6 @@ namespace ProductsDemo.Models
         public string Quality { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
+        public int BinderId { get; set; } // For assigning cards to a binder.
     }
 }
