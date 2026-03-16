@@ -34,7 +34,15 @@ namespace ProductsDemo.Controllers
         [HttpPost]
         public IHttpActionResult PostBinder(Binder binder)
         {
-            if(binder == null || string.IsNullOrEmpty(binder.GameName))
+            /* 
+            // For Debugging
+            if (binder != null)
+            {
+                System.Diagnostics.Debug.WriteLine("GameName value: " + (binder.GameName));
+            }
+            */
+
+            if (binder == null || string.IsNullOrEmpty(binder.GameName))
             {
                 return BadRequest("Binder must have a name");
             }

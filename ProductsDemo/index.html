@@ -46,208 +46,386 @@
     </style>
 </head>
 <body>
-
+        
     <div>
-        <h2>All Cards</h2>
-        <br>
-        <button onclick="openAddModal()">Add</button>
-        <button onclick="openRemoveModal()">Remove</button>
-        <ul id="cards"></ul>
-        <p id="collectionTotal" style="font-weight: bold; margin-top: 10px;">Total Collection Value: $0.00</p>
-    </div>
-    <div>
-        <h2>Search by ID</h2>
-        <input type="text" id="cardId" size="5" />
-        <input type="button" value="Search" onclick="find();" />
-        <p id="card" />
-    </div>
-
-    <!-- Add Card Modal -->
-    <div id="addModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeAddModal()">&times;</span>
-            <h3>Add New Card</h3>
-            <form id="addCardForm">
-                <div class="form-group">
-                    <label for="cardName">Name:</label>
-                    <input type="text" id="cardName" required />
-                </div>
-                <div class="form-group">
-                    <label for="cardEdition">Edition:</label>
-                    <input type="text" id="cardEdition" required />
-                </div>
-                <div class="form-group">
-                    <label for="cardQuality">Quality:</label>
-                    <select id="cardQuality" required>
-                        <option value="">Select quality...</option>
-                        <option value="Near Mint">Near Mint (NM)</option>
-                        <option value="Lightly Played">Lightly Played (LP)</option>
-                        <option value="Moderately Played">Moderately Played (MP)</option>
-                        <option value="Heavily Played">Heavily Played (HP)</option>
-                        <option value="Damaged">Damaged (D)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="cardPrice">Price:</label>
-                    <input type="number" id="cardPrice" step="0.01" required />
-                </div>
-                <button type="button" onclick="addCard()">Submit</button>
-                <button type="button" onclick="closeAddModal()">Cancel</button>
-            </form>
+        <h1>Card Collection Manager</h1>
+        
+        <!-- Binder Management -->
+        <div id="binderSection">
+            <h2>Active Binder: <span id="activeBinderName">None</span></h2>
+            <button onclick="openBinderModal()">New Binder</button>
+            <button onclick="switchBinder()">Switch Binder</button>
+            <button onclick="deleteBinder()">Delete Current Binder</button>
         </div>
-    </div>
+        <hr>
 
-    <!-- Remove Card Modal -->
-    <div id="removeModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeRemoveModal()">&times;</span>
-            <h3>Remove Card</h3>
-            <form id="removeCardForm">
-                <div class="form-group">
-                    <label for="removeCardName">Name:</label>
-                    <input type="text" id="removeCardName" required />
-                </div>
-                <div class="form-group">
-                    <label for="removeCardEdition">Edition:</label>
-                    <input type="text" id="removeCardEdition" required />
-                </div>
-                <div class="form-group">
-                    <label for="removeCardQuality">Quality:</label>
-                    <select id="removeCardQuality" required>
-                        <option value="">Select quality...</option>
-                        <option value="Near Mint">Near Mint (NM)</option>
-                        <option value="Lightly Played">Lightly Played (LP)</option>
-                        <option value="Moderately Played">Moderately Played (MP)</option>
-                        <option value="Heavily Played">Heavily Played (HP)</option>
-                        <option value="Damaged">Damaged (D)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="removeCardQuantity">Quantity to Remove:</label>
-                    <input type="number" id="removeCardQuantity" min="1" value="1" required />
-                </div>
-                <button type="button" onclick="removeCard()">Remove</button>
-                <button type="button" onclick="closeRemoveModal()">Cancel</button>
-            </form>
+        <div id="cardsSection" style="display: none;">
+            <h2>All Cards</h2>
+            <br>
+            <button onclick="openAddModal()">Add</button>
+            <button onclick="openRemoveModal()">Remove</button>
+            <ul id="cards"></ul>
+            <p id="collectionTotal" style="font-weight: bold; margin-top: 10px;">Total Collection Value: $0.00</p>
         </div>
-    </div>
+        <div>
+            <h2>Search by ID</h2>
+            <input type="text" id="cardId" size="5" />
+            <input type="button" value="Search" onclick="find();" />
+            <p id="card" />
+        </div>
 
-    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
-    <script>
-        var uri = 'api/cards';
+        <!-- Add Card Modal -->
+        <div id="addModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeAddModal()">&times;</span>
+                <h3>Add New Card</h3>
+                <form id="addCardForm">
+                    <div class="form-group">
+                        <label for="cardName">Name:</label>
+                        <input type="text" id="cardName" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="cardEdition">Edition:</label>
+                        <input type="text" id="cardEdition" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="cardQuality">Quality:</label>
+                        <select id="cardQuality" required>
+                            <option value="">Select quality...</option>
+                            <option value="Near Mint">Near Mint (NM)</option>
+                            <option value="Lightly Played">Lightly Played (LP)</option>
+                            <option value="Moderately Played">Moderately Played (MP)</option>
+                            <option value="Heavily Played">Heavily Played (HP)</option>
+                            <option value="Damaged">Damaged (D)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cardPrice">Price:</label>
+                        <input type="number" id="cardPrice" step="0.01" required />
+                    </div>
+                    <button type="button" onclick="addCard()">Submit</button>
+                    <button type="button" onclick="closeAddModal()">Cancel</button>
+                </form>
+            </div>
+        </div>
 
-        $(document).ready(function () {
-            loadCards();
-            collectionValue();
-        });
+        <!-- Remove Card Modal -->
+        <div id="removeModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeRemoveModal()">&times;</span>
+                <h3>Remove Card</h3>
+                <form id="removeCardForm">
+                    <div class="form-group">
+                        <label for="removeCardName">Name:</label>
+                        <input type="text" id="removeCardName" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="removeCardEdition">Edition:</label>
+                        <input type="text" id="removeCardEdition" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="removeCardQuality">Quality:</label>
+                        <select id="removeCardQuality" required>
+                            <option value="">Select quality...</option>
+                            <option value="Near Mint">Near Mint (NM)</option>
+                            <option value="Lightly Played">Lightly Played (LP)</option>
+                            <option value="Moderately Played">Moderately Played (MP)</option>
+                            <option value="Heavily Played">Heavily Played (HP)</option>
+                            <option value="Damaged">Damaged (D)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="removeCardQuantity">Quantity to Remove:</label>
+                        <input type="number" id="removeCardQuantity" min="1" value="1" required />
+                    </div>
+                    <button type="button" onclick="removeCard()">Remove</button>
+                    <button type="button" onclick="closeRemoveModal()">Cancel</button>
+                </form>
+            </div>
+        </div>
 
-        function loadCards() {
-            $('#cards').empty();
-            $.getJSON(uri)
-                .done(function (data) {
-                    $.each(data, function (key, item) {
-                        $('<li>', { text: formatItem(item) }).appendTo($('#cards'));
-                    });
-                });
-        }
+        <!-- Create Binder Modal -->
+        <div id="binderModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeBinderModal()">&times;</span>
+                <h3>Create New Binder</h3>
+                <form id="binderForm">
+                    <div class="form-group">
+                        <label for="gameName">Card Game:</label>
+                        <input type="text" id="gameName" placeholder="e.g., Pokemon, Magic: The Gathering" required />
+                    </div>
+                    <button type="button" onclick="createBinder()">Create</button>
+                    <button type="button" onclick="closeBinderModal()">Cancel</button>
+                </form>
+            </div>
+        </div>
 
-        function formatItem(item) {
-            return item.Quantity + 'x ' + item.Name + ' ' + item.Edition + ' Edition ' + ' $' + item.Price.toFixed(2);
-        }
+        <!-- Switch Binder Modal -->
+        <div id="switchBinderModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeSwitchBinderModal()">&times;</span>
+                <h3>Select Binder</h3>
+                <ul id="binderList"></ul>
+            </div>
+        </div>
 
-        function collectionValue() {            
-            $.getJSON('api/cards/totalvalue')
-                .done(function (data) {
-                    var displayText = 'Total Collection Value: $' + data.totalValue.toFixed(2);
-                    $('#collectionTotal').text(displayText);
-                });
-        }
+        <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+        <script>
+            var uri = 'api/cards';
+            var binderUri = 'api/binder';
+            var activeBinder = null;  // Currently selected binder
 
-        function find() {
-            var id = $('#cardId').val();
-            $.getJSON(uri + '/' + id)
-                .done(function (data) {
-                    $('#cards').text(formatItem(data));
-                })
-                .fail(function (jqXHR, textStatus, err) {
-                    $('#cards').text('Error: ' + err);
-                });
-        }
-
-        function openAddModal() {
-            document.getElementById('addModal').style.display = 'block';
-        }
-
-        function closeAddModal() {
-            document.getElementById('addModal').style.display = 'none';
-            document.getElementById('addCardForm').reset();
-        }
-
-        function addCard() {
-            var card = {
-                Name: $('#cardName').val(),
-                Edition: $('#cardEdition').val(),
-                Quality: $('#cardQuality').val(),
-                Price: parseFloat($('#cardPrice').val())
-            };
-
-            $.ajax({
-                type: 'POST',
-                url: uri,
-                data: JSON.stringify(card),
-                contentType: 'application/json',
-                success: function (data) {
-                    closeAddModal();
-                    loadCards();
-                    collectionValue();
-                },
-                error: function (jqXHR, textStatus, err) {
-                    alert('Error: ' + err);
-                }
+            $(document).ready(function () {
+                loadBinders();
             });
-        }
 
-        function openRemoveModal() {
-            document.getElementById('removeModal').style.display = 'block';
-        }
+            // === BINDER FUNCTIONS ===
 
-        function closeRemoveModal() {
-            document.getElementById('removeModal').style.display = 'none';
-            document.getElementById('removeCardForm').reset();
-        }
-
-        function removeCard() {
-            var card = {
-                Name: $('#removeCardName').val(),
-                Edition: $('#removeCardEdition').val(),
-                Quality: $('#removeCardQuality').val(),
-                Quantity: $('#removeCardQuantity').val()
+            function loadBinders() {
+                $.getJSON(binderUri)
+                    .done(function (data) {
+                        if (data.length === 0) {
+                            // No binders exist - prompt to create one
+                            alert('No binders found. Please create your first binder!');
+                            openBinderModal();
+                        } else {
+                            // Binders exist - use the first one or last active one
+                            activeBinder = data[0];
+                            updateActiveBinderDisplay();
+                            loadCards();
+                            collectionValue();
+                        }
+                    });
             }
 
-            $.ajax({
-                type: 'DELETE',
-                url: 'api/cards/remove',
-                data: JSON.stringify(card),
-                contentType: 'application/json',
-                success: function (response) {
-                    alert(response.message);
-                    closeRemoveModal();
-                    loadCards();
-                    collectionValue();
-                },
-                error: function (jqXHR, textStatus, err) {
-                    var errorMsg = 'Error: ';
-                    if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-                        errorMsg += jqXHR.responseJSON.message;
-                    } else if (jqXHR.responseJSON && jqXHR.responseJSON.Message) {
-                        errorMsg += jqXHR.responseJSON.Message;
-                    } else {
-                        errorMsg += err;
-                    }
-                    alert(errorMsg);
+            function openBinderModal() {
+                document.getElementById('binderModal').style.display = 'block';
+            }
+
+            function closeBinderModal() {
+                document.getElementById('binderModal').style.display = 'none';
+                document.getElementById('binderForm').reset();
+            }
+
+            function createBinder() {
+                var gameName = $('#gameName').val().trim();
+                if (!gameName) {
+                    alert('Please enter a game name');
+                    return;
                 }
-            })
-        }
-    </script>
+
+                $.ajax({
+                    type: 'POST',
+                    url: binderUri,
+                    data: JSON.stringify({ GameName: gameName }),
+                    contentType: 'application/json',
+                    success: function (data) {
+                        activeBinder = data;
+                        updateActiveBinderDisplay();
+                        closeBinderModal();
+                        $('#cardsSection').show();
+                        loadCards();
+                        collectionValue();
+                    },
+                    error: function (jqXHR, textStatus, err) {
+                        alert('Error creating binder: ' + err);
+                    }
+                });
+            }
+
+            function switchBinder() {
+                $.getJSON(binderUri)
+                    .done(function (data) {
+                        var $binderList = $('#binderList');
+                        $binderList.empty();
+                        
+                        $.each(data, function (key, binder) {
+                            var $li = $('<li>').text(binder.GameName + ' (Created: ' + new Date(binder.CreatedDate).toLocaleDateString() + ')');
+                            $li.css('cursor', 'pointer');
+                            $li.css('padding', '10px');
+                            $li.css('border-bottom', '1px solid #ccc');
+                            $li.on('click', function () {
+                                activeBinder = binder;
+                                updateActiveBinderDisplay();
+                                closeSwitchBinderModal();
+                                loadCards();
+                                collectionValue();
+                            });
+                            $li.appendTo($binderList);
+                        });
+                        
+                        document.getElementById('switchBinderModal').style.display = 'block';
+                    });
+            }
+
+            function closeSwitchBinderModal() {
+                document.getElementById('switchBinderModal').style.display = 'none';
+            }
+
+            function deleteBinder() {
+                if (!activeBinder) {
+                    alert('No active binder to delete');
+                    return;
+                }
+
+                if (!confirm('Delete binder "' + activeBinder.GameName + '" and all its cards?')) {
+                    return;
+                }
+
+                // Delete all cards in the binder first
+                $.ajax({
+                    type: 'DELETE',
+                    url: 'api/cards/binder/' + activeBinder.Id,
+                    success: function () {
+                        // Then delete the binder
+                        $.ajax({
+                            type: 'DELETE',
+                            url: binderUri + '/' + activeBinder.Id,
+                            success: function () {
+                                activeBinder = null;
+                                $('#cardsSection').hide();
+                                loadBinders();
+                            },
+                            error: function (jqXHR, textStatus, err) {
+                                alert('Error deleting binder: ' + err);
+                            }
+                        });
+                    }
+                });
+            }
+
+            function updateActiveBinderDisplay() {
+                if (activeBinder) {
+                    $('#activeBinderName').text(activeBinder.GameName);
+                    $('#cardsSection').show();
+                } else {
+                    $('#activeBinderName').text('None');
+                    $('#cardsSection').hide();
+                }
+            }
+
+            // === CARD FUNCTIONS (Updated for Binders) ===
+
+            function loadCards() {
+                if (!activeBinder) return;
+                
+                $('#cards').empty();
+                $.getJSON('api/cards/binder/' + activeBinder.Id)
+                    .done(function (data) {
+                        $.each(data, function (key, item) {
+                            $('<li>', { text: formatItem(item) }).appendTo($('#cards'));
+                        });
+                    });
+            }
+
+            function formatItem(item) {
+                return item.Quantity + 'x ' + item.Name + ' ' + item.Edition + ' Edition ' + ' $' + item.Price.toFixed(2);
+            }
+
+            function collectionValue() {
+                if (!activeBinder) return;
+                
+                $.getJSON('api/cards/binder/' + activeBinder.Id + '/totalvalue')
+                    .done(function (data) {
+                        var displayText = 'Total Collection Value: $' + data.totalValue.toFixed(2);
+                        $('#collectionTotal').text(displayText);
+                    });
+            }
+
+            function find() {
+                var id = $('#cardId').val();
+                $.getJSON(uri + '/' + id)
+                    .done(function (data) {
+                        $('#cards').text(formatItem(data));
+                    })
+                    .fail(function (jqXHR, textStatus, err) {
+                        $('#cards').text('Error: ' + err);
+                    });
+            }
+
+            function openAddModal() {
+                document.getElementById('addModal').style.display = 'block';
+            }
+
+            function closeAddModal() {
+                document.getElementById('addModal').style.display = 'none';
+                document.getElementById('addCardForm').reset();
+            }
+
+            function addCard() {
+                if (!activeBinder) {
+                    alert('Please select or create a binder first');
+                    return;
+                }
+
+                var card = {
+                    Name: $('#cardName').val(),
+                    Edition: $('#cardEdition').val(),
+                    Quality: $('#cardQuality').val(),
+                    Price: parseFloat($('#cardPrice').val())
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'api/cards/binder/' + activeBinder.Id,
+                    data: JSON.stringify(card),
+                    contentType: 'application/json',
+                    success: function (data) {
+                        closeAddModal();
+                        loadCards();
+                        collectionValue();
+                    },
+                    error: function (jqXHR, textStatus, err) {
+                        alert('Error: ' + err);
+                    }
+                });
+            }
+
+            function openRemoveModal() {
+                document.getElementById('removeModal').style.display = 'block';
+            }
+
+            function closeRemoveModal() {
+                document.getElementById('removeModal').style.display = 'none';
+                document.getElementById('removeCardForm').reset();
+            }
+
+            function removeCard() {
+                if (!activeBinder) {
+                    alert('Please select or create a binder first');
+                    return;
+                }
+
+                var card = {
+                    Name: $('#removeCardName').val(),
+                    Edition: $('#removeCardEdition').val(),
+                    Quality: $('#removeCardQuality').val(),
+                    Quantity: parseInt($('#removeCardQuantity').val())
+                };
+
+                $.ajax({
+                    type: 'DELETE',
+                    url: 'api/cards/binder/' + activeBinder.Id + '/remove',
+                    data: JSON.stringify(card),
+                    contentType: 'application/json',
+                    success: function (response) {
+                        alert(response.message);
+                        closeRemoveModal();
+                        loadCards();
+                        collectionValue();
+                    },
+                    error: function (jqXHR, textStatus, err) {
+                        var errorMsg = 'Error: ';
+                        if (jqXHR.responseJSON && jqXHR.responseJSON.Message) {
+                            errorMsg += jqXHR.responseJSON.Message;
+                        } else {
+                            errorMsg += err;
+                        }
+                        alert(errorMsg);
+                    }
+                });
+            }
+        </script>
+    </div>
 </body>
 </html>
